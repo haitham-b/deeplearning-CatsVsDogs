@@ -1,4 +1,4 @@
-kaggle==1.5.3
+kaggle==1.5.5
 Keras==2.2.4
 Keras-Applications==1.0.7
 Keras-Preprocessing==1.0.9
@@ -6,7 +6,7 @@ numpy==1.16.2
 pandas==0.23.0
 Pillow==5.1.0
 python-dateutil==2.7.3
-requests==2.18.4
+requests==2.22.0
 tensorboard==1.13.1
 tensorflow==1.13.1
-urllib3==1.22
+urllib3>=1.24.2
