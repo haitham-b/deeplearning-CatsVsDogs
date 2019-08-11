@@ -56,6 +56,11 @@ def main():
     final_dnn = prepare_model(dnn, NUM_CLASSES)
     train(network=final_dnn, epochs=NUM_EPOCHS, batch_size=BATCH_SIZE, training=train_batches, validation=valid_batches)
 
+    # save trained weights
+    final_dnn.save_weights(file_weights)
+    with open(file_architecture, 'w') as f:
+        f.write(final_dnn.to_json())
+
 
 def train(network, epochs, batch_size, training, validation):
     # Use Checkpoint model to save model weights after an epoch
