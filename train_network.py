@@ -23,6 +23,8 @@ file_weights = "model-MobileNetV2-final.h5"
 file_architecture = 'model_MobileNetV2_architecture.json'
 
 
+# def prep
+
 def main():
     """
     Script entrypoint
@@ -37,7 +39,23 @@ def main():
                                     fill_mode='nearest')
 
     train_batches = train_data.flow_from_directory(DATASET_PATH + '/train',
-                                                   target_size=IMAGE_SIZE)
+                                                   target_size=IMAGE_SIZE,
+                                                   interpolation='bicubic',
+                                                   class_mode='categorical',
+                                                   shuffle=True,
+                                                   batch_size=BATCH_SIZE)
+
+    valid_data = ImageDataGenerator()
+    valid_batches = valid_data.flow_from_directory(DATASET_PATH + '/valid',
+                                                   target_size=IMAGE_SIZE,
+                                                   interpolation='bicubic',
+                                                   class_mode='categorical',
+                                                   shuffle=True,
+                                                   batch_size=BATCH_SIZE)
+
+    dnn = MobileNetV2(include_top=False, input_tensor=None, input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3))
+
+    # final_dnn = prepare_model(dnn, NUM_CLASSES)
 
 
 if __name__ == "__main__":
