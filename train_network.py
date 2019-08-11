@@ -54,6 +54,23 @@ def main():
     dnn = MobileNetV2(include_top=False, input_tensor=None, input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3))
 
     final_dnn = prepare_model(dnn, NUM_CLASSES)
+    train(network=final_dnn, epochs=NUM_EPOCHS, batch_size=BATCH_SIZE, training=train_batches, validation=valid_batches)
+
+
+def train(network, epochs, batch_size, training, validation):
+    # Use Checkpoint model to save model weights after an epoch
+    checkpoint_callback = ModelCheckpoint(file_checkpoints, monitor='val_acc', verbose=1, save_best_only=True,
+                                          mode='max')
+
+    # Configure Tensorboard Callback
+    tensorboard_callback = TensorBoard(log_dir='./tensorboard', histogram_freq=0, write_graph=True,
+                                       write_images=False)
+
+    network.fit_generator(training, steps_per_epoch=training.samples // batch_size,
+                          validation_data=validation,
+                          validation_steps=validation.samples // batch_size,
+                          epochs=epochs,
+                          callbacks=[checkpoint_callback, tensorboard_callback])
 
 
 def prepare_model(network, num_classes):
