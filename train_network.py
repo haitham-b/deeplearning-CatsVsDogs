@@ -23,8 +23,6 @@ file_weights = "model-MobileNetV2-final.h5"
 file_architecture = 'model_MobileNetV2_architecture.json'
 
 
-# def prep
-
 def main():
     """
     Script entrypoint
@@ -55,7 +53,24 @@ def main():
 
     dnn = MobileNetV2(include_top=False, input_tensor=None, input_shape=(IMAGE_SIZE[0], IMAGE_SIZE[1], 3))
 
-    # final_dnn = prepare_model(dnn, NUM_CLASSES)
+    final_dnn = prepare_model(dnn, NUM_CLASSES)
+
+
+def prepare_model(network, num_classes):
+    x = network.output
+    x = Flatten()(x)
+    x = Dropout(0.5)(x)  # to prevent overfitting by randomly remove neruons during forward or backpropegation
+
+    output_layer = Dense(num_classes, activation='softmax', name='softmax')(x)
+    net_final = Model(inputs=network.input, outputs=output_layer)
+
+    for layer in net_final.layers[:FREEZE_LAYERS]:
+        layer.trainable = False
+    for layer in net_final.layers[FREEZE_LAYERS:]:
+        layer.trainable = True
+
+    net_final.compile(optimizer=Adam(lr=1e-5), loss='categorical_crossentropy', metrics=['accuracy'])
+    return net_final
 
 
 if __name__ == "__main__":
